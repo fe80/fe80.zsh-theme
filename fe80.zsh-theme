@@ -4,7 +4,8 @@
 master_color='white'
 
 # If user is root
-if [ $UID -eq 0 ]; then
+if [ $UID -eq 0 ]
+then
   arrow0='%{$fg[red]%}╭─%{$fg[${master_color}]%}'
   arrow1='%{$fg[red]%}╰─➤'
 else
@@ -12,15 +13,8 @@ else
   arrow1='%{$fg[${master_color}]%}╰─➤'
 fi
 
-# If Cloud
-if [ $ZSHCLOUD ]; then
-  $_cloud='%{$fg[green]%}☁ '
-else
-  $_cloud=''
-end
-
 # Var prompt user han host info
-ps0_fe80="${arrow0}%n@%m ${_cloud}%{$fg[yellow]%}%~"
+ps0_fe80="${arrow0}%n@%m %{$fg[yellow]%}%~"
 ps1_fe80="${arrow1}%{$reset_color%}%"
 
 # Git info
@@ -32,8 +26,20 @@ return_code="%(?..%{$fg[red]%} %? ↵%{$reset_color%})"
 # Hour
 hour="%{$FG[248]%}[%*]%{$reset_color%}"
 
+# Kub theme
+KUBE_PS1_PREFIX=''
+KUBE_PS1_SYMBOL_ENABLE=true
+KUBE_PS1_SEPARATOR=''
+KUBE_PS1_CTX_COLOR='blue'
+KUBE_PS1_SUFFIX=''
+KUBE_PS1_NS_ENABLE=false
+KUBE_PS1_BINARY=$(which kubectl)
+kub_ninfo='$(kube_ps1)'
+
+args_ninfo=(${git_ninfo} ${kub_ninfo})
+
 # Prompt
-PROMPT="${ps0_fe80} ${git_ninfo}
+PROMPT="${ps0_fe80} ${(j: :)args_ninfo}
 ${ps1_fe80}\ "
 PROMPT2="${ps1_fe80}\ "
 
