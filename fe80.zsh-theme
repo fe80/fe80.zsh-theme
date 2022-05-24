@@ -36,7 +36,7 @@ KUBE_PS1_NS_ENABLE=false
 KUBE_PS1_BINARY=$(which kubectl)
 kub_ninfo='$(kube_ps1)'
 
-args_ninfo=(${git_ninfo} ${kub_ninfo})
+args_ninfo=(${kub_ninfo} ${git_ninfo})
 
 # Prompt
 PROMPT="${ps0_fe80} ${(j: :)args_ninfo}
