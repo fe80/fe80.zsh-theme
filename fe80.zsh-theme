@@ -29,7 +29,7 @@ hour="%{$FG[248]%}[%*]%{$reset_color%}"
 # Kub theme
 KUBE_PS1_PREFIX=''
 KUBE_PS1_SYMBOL_ENABLE=true
-KUBE_PS1_SEPARATOR=''
+KUBE_PS1_SEPARATOR=' '
 KUBE_PS1_CTX_COLOR='blue'
 KUBE_PS1_SUFFIX=''
 KUBE_PS1_NS_ENABLE=false
