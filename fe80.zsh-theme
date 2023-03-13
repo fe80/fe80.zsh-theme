@@ -2,6 +2,7 @@
 
 # Default color
 master_color='white'
+[[ -z ${ZSH_FE80_CLOUD} ]] || clodops=' ☁'
 
 # If user is root
 if [ $UID -eq 0 ]
@@ -14,7 +15,7 @@ else
 fi
 
 # Var prompt user han host info
-ps0_fe80="${arrow0}%n@%m %{$fg[yellow]%}%~"
+ps0_fe80="${arrow0}%n@%m${clodops:-} %{$fg[yellow]%}%~"
 ps1_fe80="${arrow1}%{$reset_color%}%"
 
 # Git info
