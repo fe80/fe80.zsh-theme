@@ -30,7 +30,17 @@ ps1_fe80="${arrow1}%{$reset_color%}"
 ps2_fe80="${arrow2}%{$reset_color%}"
 
 # Git info
-git_ninfo() { echo -n "$(git_prompt_info)$(git_remote_status)" }
+# Call the sync version: the async git_prompt_info is only fed when
+# `$(git_prompt_info)` appears literally in $PROMPT, and the layout needs it now
+git_ninfo() {
+  local info
+  if (( $+functions[_omz_git_prompt_info] )); then
+    info="$(_omz_git_prompt_info)"
+  else
+    info="$(git_prompt_info)"
+  fi
+  echo -n "${info}$(git_remote_status)"
+}
 
 # Return code if is not 0
 return_code="%(?..%{$fg[red]%} %? ↵%{$reset_color%})"
