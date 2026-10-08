@@ -69,10 +69,13 @@ kub_ninfo() {
 args_ninfo=(kub_ninfo git_ninfo venv_prompt_info)
 
 # Build the prompt before each display:
-# - third ├─ line with the infos only if there are >= 3 non-empty infos,
-#   or if the path is longer than half the terminal width
+# - third ├─ line with the infos if there are >= 3 non-empty infos,
+#   if the path is longer than half the terminal width,
+#   or if the first line (with the right prompt) does not fit in the terminal
 # - path shortened with `..` when it reaches 75% of the terminal width
 _fe80_build_prompt() {
+  local ret=$?
+  setopt localoptions extendedglob
   local fn out
   local -a infos
   for fn in $args_ninfo; do
@@ -86,11 +89,19 @@ _fe80_build_prompt() {
   local max_len=$(( COLUMNS * 3 / 4 ))
   if (( path_len >= max_len )); then
     _fe80_path="%${max_len}<..<%~%<<"
+    path_len=$max_len
   else
     _fe80_path="%~"
   fi
 
-  if (( ${#infos} >= 3 || path_len * 2 > COLUMNS )); then
+  # Visible width of the first line on two-line layout:
+  # "╭─user@host path infos" + " " + "[hh:mm:ss]" + " N ↵"
+  local plain=${(%)_fe80_infos}
+  plain=${plain//$'\e'\[[0-9;]#m/}
+  local line_len=$(( 2 + ${(m)#${(%):-%n@%m}} + 1 + path_len + 1 + ${(m)#plain} + 1 + 10 ))
+  (( ret )) && (( line_len += ${#ret} + 3 ))
+
+  if (( ${#infos} >= 3 || path_len * 2 > COLUMNS || line_len >= COLUMNS )); then
     PROMPT="${ps0_fe80}"'${_fe80_path}'"%{$reset_color%}
 ${ps1_fe80} "'${_fe80_infos}'"
 ${ps2_fe80} "
