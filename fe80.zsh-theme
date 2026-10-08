@@ -57,7 +57,13 @@ KUBE_PS1_SUFFIX=''
 KUBE_PS1_NS_ENABLE=false
 KUBE_PS1_BINARY=$(which kubectl)
 VIRTUAL_ENV_DISABLE_PROMPT=1
-kub_ninfo() { (( $+functions[kube_ps1] )) && kube_ps1 }
+KUBE_PS1_HIDE_IF_NOCONTEXT=true
+# Hide the segment when there is no context (kube_ps1 would print "N/A")
+kub_ninfo() {
+  (( $+functions[kube_ps1] )) || return
+  [[ -z $KUBE_PS1_CONTEXT || $KUBE_PS1_CONTEXT == 'N/A' ]] && return
+  kube_ps1
+}
 
 # Info functions shown in the prompt (in order)
 args_ninfo=(kub_ninfo git_ninfo venv_prompt_info)
